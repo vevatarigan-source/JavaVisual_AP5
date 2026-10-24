@@ -1,3 +1,4 @@
+
 package com.unpri.charactermanager.model;
 
 import java.util.ArrayList;
@@ -10,12 +11,17 @@ public class CharacterManager {
         characters = new ArrayList<>();
     }
 
+    /**
+     * Menambahkan karakter jika nama belum digunakan.
+     *
+     * @param character karakter yang akan ditambahkan
+     * @return true jika berhasil, false jika gagal
+     */
     public boolean addCharacter(Character character) {
         if (character == null) {
             return false;
         }
 
-        // Tolak nama duplikat.
         if (findByName(character.getName()) != null) {
             return false;
         }
@@ -24,13 +30,19 @@ public class CharacterManager {
         return true;
     }
 
+    /**
+     * Mencari karakter berdasarkan nama.
+     *
+     * @param name nama karakter yang dicari
+     * @return karakter yang ditemukan atau null
+     */
     public Character findByName(String name) {
         if (name == null) {
             return null;
         }
 
         for (Character character : characters) {
-            if (character.getName().equalsIgnoreCase(name.trim())) {
+            if (character.getName().equalsIgnoreCase(name)) {
                 return character;
             }
         }
@@ -38,6 +50,12 @@ public class CharacterManager {
         return null;
     }
 
+    /**
+     * Menghapus karakter berdasarkan nama.
+     *
+     * @param name nama karakter yang akan dihapus
+     * @return true jika berhasil dihapus
+     */
     public boolean removeCharacter(String name) {
         Character character = findByName(name);
 
@@ -49,80 +67,44 @@ public class CharacterManager {
         return true;
     }
 
+    /**
+     * Menghitung jumlah karakter.
+     *
+     * @return jumlah karakter
+     */
     public int getTotalCharacters() {
         return characters.size();
     }
 
     /**
-     * Mengembalikan salinan daftar karakter agar pemanggil
-     * tidak dapat menambah atau menghapus isi daftar internal.
+     * Mengembalikan salinan daftar karakter.
      *
-     * @return salinan ArrayList karakter
+     * @return salinan ArrayList, bukan daftar asli
      */
     public ArrayList<Character> getAllCharacters() {
         return new ArrayList<>(characters);
     }
 
     /**
-     * Menghitung rata-rata level semua karakter.
+     * Mencari karakter dengan attackPower tertinggi.
      *
-     * @return rata-rata level, atau 0 jika daftar kosong
+     * @return karakter terkuat, atau null jika daftar kosong
      */
-    public double getAverageLevel() {
+    public Character findStrongest() {
         if (characters.isEmpty()) {
-            return 0.0;
+            return null;
         }
 
-        int totalLevel = 0;
+        Character strongest = characters.get(0);
 
         for (Character character : characters) {
-            totalLevel += character.getLevel();
-        }
-
-        return (double) totalLevel / characters.size();
-    }
-
-    /**
-     * Mencari semua karakter berdasarkan tipe.
-     *
-     * @param type tipe karakter yang dicari
-     * @return ArrayList baru yang berisi karakter dengan tipe tersebut
-     */
-    public ArrayList<Character> findByType(CharacterType type) {
-        ArrayList<Character> result = new ArrayList<>();
-
-        if (type == null) {
-            return result;
-        }
-
-        for (Character character : characters) {
-            if (character.getType() == type) {
-                result.add(character);
+            if (character.getAttackPower()
+                    > strongest.getAttackPower()) {
+                strongest = character;
             }
         }
 
-        return result;
-    }
-
-    /**
-     * Menghitung banyaknya karakter untuk tipe tertentu.
-     *
-     * @param type tipe karakter yang akan dihitung
-     * @return jumlah karakter dengan tipe tersebut
-     */
-    public int countByType(CharacterType type) {
-        if (type == null) {
-            return 0;
-        }
-
-        int count = 0;
-
-        for (Character character : characters) {
-            if (character.getType() == type) {
-                count++;
-            }
-        }
-
-        return count;
+        return strongest;
     }
 }
+
